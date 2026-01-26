@@ -5,6 +5,7 @@ __pycache__/
 
 docs/node_modules/
 docs/build/
+docs/_build/
 
 .venv/
 .uv/
