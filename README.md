@@ -73,15 +73,16 @@ except GmoCoinHttpError as exc:
 ### Live trading tests (local-only)
 
 Live tests are excluded by default. To run them locally, opt in and set required
-environment variables (see `.env.example`):
+environment variables (see `.env.example`). Tests load `.env` automatically:
 
 ```bash
-export GMO_LIVE_TESTS=1
+export GMO_LIVE_TESTS=true
 export GMO_API_KEY="your_api_key"
 export GMO_SECRET_KEY="your_secret_key"
-export GMO_LIVE_SYMBOL="BTC_JPY"
-export GMO_LIVE_PRICE="430001"
-export GMO_LIVE_SIZE="0.02"
+export GMO_LIVE_SYMBOL="BTC"
+export GMO_LIVE_SIZE="0.0001"
+export GMO_LIVE_BUY_EXECUTION_TYPE="MARKET"
+export GMO_LIVE_SELL_EXECUTION_TYPE="MARKET"
 ```
 
 Then run:
@@ -92,42 +93,42 @@ pytest -m live
 
 ## Public REST API
 
-| Category                | Endpoint / Function    | Path | Implemented |
-|-------------------------|------------------------|------|-------------|
-| Exchange status         | `/public/v1/status`    | ✅    |
-| Latest ticker (rate)    | `/public/v1/ticker`    | ✅    |
+| Category                | Endpoint / Function     | Path | Implemented |
+|-------------------------|-------------------------|------|-------------|
+| Exchange status         | `/public/v1/status`     | ✅    |
+| Latest ticker (rate)    | `/public/v1/ticker`     | ✅    |
 | Order book              | `/public/v1/orderbooks` | ✅    |
-| Trades                  | `/public/v1/trades`    | ✅    |
-| K-Line (OHLCV)          | `/public/v1/klines`    | ✅    |
-| Trading rules / symbols | `/public/v1/symbols`   | ✅    |
+| Trades                  | `/public/v1/trades`     | ✅    |
+| K-Line (OHLCV)          | `/public/v1/klines`     | ✅    |
+| Trading rules / symbols | `/public/v1/symbols`    | ✅    |
 
 ## Private REST API
 
-| Category                    | Endpoint / Function             | Path | Implemented |
-|-----------------------------|---------------------------------|------|-------------|
-| Collateral / margin summary | `/private/v1/account/margin`    | ✅    |
-| Asset balances              | `/private/v1/account/assets`    | ✅    |
-| Trading volume info         | `/private/v1/account/tradingVolume` | ✅    |
-| JPY deposit history         | `/private/v1/account/fiatDeposit/history` | ✅    |
+| Category                    | Endpoint / Function                          | Path | Implemented |
+|-----------------------------|----------------------------------------------|------|-------------|
+| Collateral / margin summary | `/private/v1/account/margin`                 | ✅    |
+| Asset balances              | `/private/v1/account/assets`                 | ✅    |
+| Trading volume info         | `/private/v1/account/tradingVolume`          | ✅    |
+| JPY deposit history         | `/private/v1/account/fiatDeposit/history`    | ✅    |
 | JPY withdrawal history      | `/private/v1/account/fiatWithdrawal/history` | ✅    |
-| Crypto deposit history      | `/private/v1/account/deposit/history` | ✅    |
-| Crypto withdrawal history   | `/private/v1/account/withdrawal/history` | ✅    |
-| Query orders                | `/private/v1/orders`            | ✅    |
-| Active orders               | `/private/v1/activeOrders`      | ✅    |
-| Executions                  | `/private/v1/executions`        | ✅    |
-| Latest executions           | `/private/v1/latestExecutions`  | ✅    |
-| Open positions              | `/private/v1/openPositions`     | ✅    |
-| Position summary            | `/private/v1/positionSummary`   | ✅    |
-| Internal transfer           | `/private/v1/account/transfer`  | ✅    |
-| Place order                 | `/private/v1/order` (POST)      | ✅    |
-| Change order                | `/private/v1/changeOrder`       | ✅    |
-| Cancel order                | `/private/v1/cancelOrder`       | ✅    |
-| Cancel multiple orders      | `/private/v1/cancelOrders`      | ✅    |
-| Cancel bulk orders          | `/private/v1/cancelBulkOrder`   | ✅    |
-| Cancel all orders           | `/private/v1/cancelAll`         | ❌    |
-| Close (settlement) order    | `/private/v1/closeOrder`        | ✅    |
-| Bulk close orders           | `/private/v1/closeBulkOrder`    | ✅    |
-| Change loss-cut price       | `/private/v1/changeLosscutPrice` | ✅    |
+| Crypto deposit history      | `/private/v1/account/deposit/history`        | ✅    |
+| Crypto withdrawal history   | `/private/v1/account/withdrawal/history`     | ✅    |
+| Query orders                | `/private/v1/orders`                         | ✅    |
+| Active orders               | `/private/v1/activeOrders`                   | ✅    |
+| Executions                  | `/private/v1/executions`                     | ✅    |
+| Latest executions           | `/private/v1/latestExecutions`               | ✅    |
+| Open positions              | `/private/v1/openPositions`                  | ✅    |
+| Position summary            | `/private/v1/positionSummary`                | ✅    |
+| Internal transfer           | `/private/v1/account/transfer`               | ✅    |
+| Place order                 | `/private/v1/order` (POST)                   | ✅    |
+| Change order                | `/private/v1/changeOrder`                    | ✅    |
+| Cancel order                | `/private/v1/cancelOrder`                    | ✅    |
+| Cancel multiple orders      | `/private/v1/cancelOrders`                   | ✅    |
+| Cancel bulk orders          | `/private/v1/cancelBulkOrder`                | ✅    |
+| Cancel all orders           | `/private/v1/cancelAll`                      | ❌    |
+| Close (settlement) order    | `/private/v1/closeOrder`                     | ✅    |
+| Bulk close orders           | `/private/v1/closeBulkOrder`                 | ✅    |
+| Change loss-cut price       | `/private/v1/changeLosscutPrice`             | ✅    |
 
 ## Public WebSocket API
 
