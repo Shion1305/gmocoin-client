@@ -2,6 +2,7 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.egg-info/
 
 docs/node_modules/
 docs/build/
