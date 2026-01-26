@@ -8,8 +8,29 @@ import time
 from typing import Any, Iterable, Mapping
 
 import httpx
+from pydantic import BaseModel
 
 from .errors import GmoCoinApiError, GmoCoinHttpError
+from .models import (
+    ActiveOrdersData,
+    APIResponse,
+    AssetItem,
+    CryptoHistoryItem,
+    ExecutionsData,
+    KlineItem,
+    LatestExecutionsData,
+    MarginData,
+    OpenPositionsData,
+    OrderbookData,
+    OrdersData,
+    PositionSummaryData,
+    ServiceStatusData,
+    SymbolRule,
+    TickerItem,
+    TradesData,
+    TradingVolumeData,
+    FiatHistoryItem,
+)
 
 PUBLIC_BASE_URL = "https://api.coin.z.com/public"
 PRIVATE_BASE_URL = "https://api.coin.z.com/private"
@@ -115,14 +136,15 @@ class GmoCoinClient:
         return data
 
     def _request(
-            self,
-            method: str,
-            path: str,
-            *,
-            private: bool = False,
-            params: Mapping[str, Any] | None = None,
-            json_body: Mapping[str, Any] | None = None,
-            sign_body: bool | None = None,
+        self,
+        method: str,
+        path: str,
+        *,
+        private: bool = False,
+        params: Mapping[str, Any] | None = None,
+        json_body: Mapping[str, Any] | None = None,
+        sign_body: bool | None = None,
+        response_model: type[BaseModel] | None = None,
     ) -> Any:
         base_url = self.private_base_url if private else self.public_base_url
         url = f"{base_url}{path}"
@@ -144,52 +166,91 @@ class GmoCoinClient:
             content=body if body else None,
             headers=headers or None,
         )
-        return self._handle_response(response)
+        data = self._handle_response(response)
+        if response_model is not None:
+            return response_model.model_validate(data)
+        return data
 
     # Public API methods
-    def get_status(self) -> Any:
-        return self._request("GET", "/v1/status")
+    def get_status(self) -> APIResponse[ServiceStatusData]:
+        return self._request("GET", "/v1/status", response_model=APIResponse[ServiceStatusData])
 
-    def get_ticker(self, symbol: str | None = None) -> Any:
+    def get_ticker(self, symbol: str | None = None) -> APIResponse[list[TickerItem]]:
         params = _prune_params({"symbol": symbol})
-        return self._request("GET", "/v1/ticker", params=params)
+        return self._request(
+            "GET",
+            "/v1/ticker",
+            params=params,
+            response_model=APIResponse[list[TickerItem]],
+        )
 
-    def get_orderbooks(self, symbol: str) -> Any:
-        return self._request("GET", "/v1/orderbooks", params={"symbol": symbol})
+    def get_orderbooks(self, symbol: str) -> APIResponse[OrderbookData]:
+        return self._request(
+            "GET",
+            "/v1/orderbooks",
+            params={"symbol": symbol},
+            response_model=APIResponse[OrderbookData],
+        )
 
-    def get_trades(self, symbol: str, *, page: int | None = None, count: int | None = None) -> Any:
+    def get_trades(self, symbol: str, *, page: int | None = None, count: int | None = None) -> APIResponse[TradesData]:
         params = _prune_params({"symbol": symbol, "page": page, "count": count})
-        return self._request("GET", "/v1/trades", params=params)
+        return self._request(
+            "GET",
+            "/v1/trades",
+            params=params,
+            response_model=APIResponse[TradesData],
+        )
 
-    def get_klines(self, symbol: str, interval: str, date: str) -> Any:
+    def get_klines(self, symbol: str, interval: str, date: str) -> APIResponse[list[KlineItem]]:
         params = {"symbol": symbol, "interval": interval, "date": date}
-        return self._request("GET", "/v1/klines", params=params)
+        return self._request(
+            "GET",
+            "/v1/klines",
+            params=params,
+            response_model=APIResponse[list[KlineItem]],
+        )
 
-    def get_symbols(self) -> Any:
-        return self._request("GET", "/v1/symbols")
+    def get_symbols(self) -> APIResponse[list[SymbolRule]]:
+        return self._request("GET", "/v1/symbols", response_model=APIResponse[list[SymbolRule]])
 
     # Private API methods (Account)
-    def get_margin(self) -> Any:
-        return self._request("GET", "/v1/account/margin", private=True)
+    def get_margin(self) -> APIResponse[MarginData]:
+        return self._request(
+            "GET",
+            "/v1/account/margin",
+            private=True,
+            response_model=APIResponse[MarginData],
+        )
 
-    def get_assets(self) -> Any:
-        return self._request("GET", "/v1/account/assets", private=True)
+    def get_assets(self) -> APIResponse[list[AssetItem]]:
+        return self._request(
+            "GET",
+            "/v1/account/assets",
+            private=True,
+            response_model=APIResponse[list[AssetItem]],
+        )
 
-    def get_trading_volume(self) -> Any:
-        return self._request("GET", "/v1/account/tradingVolume", private=True)
+    def get_trading_volume(self) -> APIResponse[TradingVolumeData]:
+        return self._request(
+            "GET",
+            "/v1/account/tradingVolume",
+            private=True,
+            response_model=APIResponse[TradingVolumeData],
+        )
 
     def get_fiat_deposits(
             self,
             from_timestamp: str,
             *,
             to_timestamp: str | None = None,
-    ) -> Any:
+    ) -> APIResponse[list[FiatHistoryItem]]:
         params = _prune_params({"fromTimestamp": from_timestamp, "toTimestamp": to_timestamp})
         return self._request(
             "GET",
             "/v1/account/fiatDeposit/history",
             private=True,
             params=params,
+            response_model=APIResponse[list[FiatHistoryItem]],
         )
 
     def get_fiat_withdrawals(
@@ -197,13 +258,14 @@ class GmoCoinClient:
             from_timestamp: str,
             *,
             to_timestamp: str | None = None,
-    ) -> Any:
+    ) -> APIResponse[list[FiatHistoryItem]]:
         params = _prune_params({"fromTimestamp": from_timestamp, "toTimestamp": to_timestamp})
         return self._request(
             "GET",
             "/v1/account/fiatWithdrawal/history",
             private=True,
             params=params,
+            response_model=APIResponse[list[FiatHistoryItem]],
         )
 
     def get_crypto_deposits(
@@ -212,7 +274,7 @@ class GmoCoinClient:
             from_timestamp: str,
             *,
             to_timestamp: str | None = None,
-    ) -> Any:
+    ) -> APIResponse[list[CryptoHistoryItem]]:
         params = _prune_params(
             {"symbol": symbol, "fromTimestamp": from_timestamp, "toTimestamp": to_timestamp},
         )
@@ -221,6 +283,7 @@ class GmoCoinClient:
             "/v1/account/deposit/history",
             private=True,
             params=params,
+            response_model=APIResponse[list[CryptoHistoryItem]],
         )
 
     def get_crypto_withdrawals(
@@ -229,7 +292,7 @@ class GmoCoinClient:
             from_timestamp: str,
             *,
             to_timestamp: str | None = None,
-    ) -> Any:
+    ) -> APIResponse[list[CryptoHistoryItem]]:
         params = _prune_params(
             {"symbol": symbol, "fromTimestamp": from_timestamp, "toTimestamp": to_timestamp},
         )
@@ -238,12 +301,19 @@ class GmoCoinClient:
             "/v1/account/withdrawal/history",
             private=True,
             params=params,
+            response_model=APIResponse[list[CryptoHistoryItem]],
         )
 
     # Private API methods (Orders)
-    def get_orders(self, order_ids: Iterable[Any] | str | int) -> Any:
+    def get_orders(self, order_ids: Iterable[Any] | str | int) -> APIResponse[OrdersData]:
         params = {"orderId": _comma_list(order_ids)}
-        return self._request("GET", "/v1/orders", private=True, params=params)
+        return self._request(
+            "GET",
+            "/v1/orders",
+            private=True,
+            params=params,
+            response_model=APIResponse[OrdersData],
+        )
 
     def get_active_orders(
             self,
@@ -251,16 +321,22 @@ class GmoCoinClient:
             *,
             page: int | None = None,
             count: int | None = None,
-    ) -> Any:
+    ) -> APIResponse[ActiveOrdersData]:
         params = _prune_params({"symbol": symbol, "page": page, "count": count})
-        return self._request("GET", "/v1/activeOrders", private=True, params=params)
+        return self._request(
+            "GET",
+            "/v1/activeOrders",
+            private=True,
+            params=params,
+            response_model=APIResponse[ActiveOrdersData],
+        )
 
     def get_executions(
             self,
             *,
             order_id: int | None = None,
             execution_id: Iterable[Any] | str | int | None = None,
-    ) -> Any:
+    ) -> APIResponse[ExecutionsData]:
         if order_id is None and execution_id is None:
             raise ValueError("order_id or execution_id is required")
         params = _prune_params(
@@ -269,7 +345,13 @@ class GmoCoinClient:
                 "executionId": _comma_list(execution_id) if execution_id is not None else None,
             },
         )
-        return self._request("GET", "/v1/executions", private=True, params=params)
+        return self._request(
+            "GET",
+            "/v1/executions",
+            private=True,
+            params=params,
+            response_model=APIResponse[ExecutionsData],
+        )
 
     def get_latest_executions(
             self,
@@ -277,9 +359,15 @@ class GmoCoinClient:
             *,
             page: int | None = None,
             count: int | None = None,
-    ) -> Any:
+    ) -> APIResponse[LatestExecutionsData]:
         params = _prune_params({"symbol": symbol, "page": page, "count": count})
-        return self._request("GET", "/v1/latestExecutions", private=True, params=params)
+        return self._request(
+            "GET",
+            "/v1/latestExecutions",
+            private=True,
+            params=params,
+            response_model=APIResponse[LatestExecutionsData],
+        )
 
     def create_order(
             self,
@@ -343,18 +431,30 @@ class GmoCoinClient:
 
     # Private API methods (Positions)
     def get_open_positions(
-            self,
-            symbol: str,
-            *,
-            page: int | None = None,
-            count: int | None = None,
-    ) -> Any:
+        self,
+        symbol: str,
+        *,
+        page: int | None = None,
+        count: int | None = None,
+    ) -> APIResponse[OpenPositionsData]:
         params = _prune_params({"symbol": symbol, "page": page, "count": count})
-        return self._request("GET", "/v1/openPositions", private=True, params=params)
+        return self._request(
+            "GET",
+            "/v1/openPositions",
+            private=True,
+            params=params,
+            response_model=APIResponse[OpenPositionsData],
+        )
 
-    def get_position_summary(self, symbol: str | None = None) -> Any:
+    def get_position_summary(self, symbol: str | None = None) -> APIResponse[PositionSummaryData]:
         params = _prune_params({"symbol": symbol})
-        return self._request("GET", "/v1/positionSummary", private=True, params=params)
+        return self._request(
+            "GET",
+            "/v1/positionSummary",
+            private=True,
+            params=params,
+            response_model=APIResponse[PositionSummaryData],
+        )
 
     def transfer(self, *, amount: str, transfer_type: str) -> Any:
         body = {"amount": amount, "transferType": transfer_type}
