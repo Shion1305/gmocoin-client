@@ -7,7 +7,8 @@ from importlib import metadata
 sys.path.insert(0, os.path.abspath("../src"))
 
 project = "gmocoin-client"
-author = "GMO Coin"
+author = "Shion Ichikawa"
+copyright = "2025, Shion Ichikawa"
 
 try:
     release = metadata.version("gmocoin-client")
@@ -31,3 +32,8 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 html_theme = "furo"
 html_title = f"{project} {release}"
+html_theme_options = {
+    "source_repository": "https://github.com/Shion1305/gmocoin-client",
+    "source_branch": "main",
+    "source_directory": "docs/",
+}
