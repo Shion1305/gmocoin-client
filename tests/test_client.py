@@ -16,6 +16,7 @@ def _sign(secret: str, timestamp: str, method: str, path: str, body: str) -> str
 
 
 def test_public_ticker_query(httpx_mock):
+    # Validates public ticker query is built with the symbol parameter.
     def handler(request: httpx.Request) -> httpx.Response:
         assert request.method == "GET"
         assert request.url.path == "/public/v1/ticker"
@@ -29,6 +30,7 @@ def test_public_ticker_query(httpx_mock):
 
 
 def test_private_get_signing(httpx_mock, monkeypatch):
+    # Ensures private GET requests are signed with timestamp and path only.
     timestamp = "1700000000000"
     monkeypatch.setattr(client_module, "_timestamp_ms", lambda: timestamp)
 
@@ -48,6 +50,7 @@ def test_private_get_signing(httpx_mock, monkeypatch):
 
 
 def test_private_post_signing_with_body(httpx_mock, monkeypatch):
+    # Ensures private POST requests are signed including the JSON body.
     timestamp = "1700000000000"
     monkeypatch.setattr(client_module, "_timestamp_ms", lambda: timestamp)
 
@@ -87,6 +90,7 @@ def test_private_post_signing_with_body(httpx_mock, monkeypatch):
 
 
 def test_ws_auth_extend_signing_without_body(httpx_mock, monkeypatch):
+    # Ensures ws-auth extend signs only timestamp+method+path.
     timestamp = "1700000000000"
     monkeypatch.setattr(client_module, "_timestamp_ms", lambda: timestamp)
 
@@ -105,6 +109,7 @@ def test_ws_auth_extend_signing_without_body(httpx_mock, monkeypatch):
 
 
 def test_api_error_raises(httpx_mock):
+    # Raises API error when status indicates failure.
     httpx_mock.add_response(
         method="GET",
         url="https://api.coin.z.com/public/v1/status",
@@ -119,6 +124,7 @@ def test_api_error_raises(httpx_mock):
 
 
 def test_http_error_raises(httpx_mock):
+    # Raises HTTP error for non-success HTTP status.
     httpx_mock.add_response(
         method="GET",
         url="https://api.coin.z.com/public/v1/status",
@@ -131,6 +137,7 @@ def test_http_error_raises(httpx_mock):
 
 
 def test_private_call_requires_keys():
+    # Enforces that private endpoints require API credentials.
     client = GmoCoinClient()
     with pytest.raises(ValueError):
         client.get_assets()
