@@ -6,7 +6,7 @@ import httpx
 import pytest
 
 import gmocoin_client.client as client_module
-from gmocoin_client import GmoCoinClient
+from gmocoin_client import Client
 from gmocoin_client.errors import GmoCoinApiError, GmoCoinHttpError
 
 
@@ -25,7 +25,7 @@ def test_public_ticker_query(httpx_mock):
 
     httpx_mock.add_callback(handler)
 
-    client = GmoCoinClient()
+    client = Client()
     client.get_ticker("BTC")
 
 
@@ -45,7 +45,7 @@ def test_private_get_signing(httpx_mock, monkeypatch):
 
     httpx_mock.add_callback(handler)
 
-    client = GmoCoinClient(api_key="key", api_secret="secret")
+    client = Client(api_key="key", api_secret="secret")
     client.get_margin()
 
 
@@ -78,7 +78,7 @@ def test_private_post_signing_with_body(httpx_mock, monkeypatch):
 
     httpx_mock.add_callback(handler)
 
-    client = GmoCoinClient(api_key="key", api_secret="secret")
+    client = Client(api_key="key", api_secret="secret")
     client.create_order(
         symbol="BTC_JPY",
         side="BUY",
@@ -104,7 +104,7 @@ def test_ws_auth_extend_signing_without_body(httpx_mock, monkeypatch):
 
     httpx_mock.add_callback(handler)
 
-    client = GmoCoinClient(api_key="key", api_secret="secret")
+    client = Client(api_key="key", api_secret="secret")
     client.ws_auth_extend("token123")
 
 
@@ -118,7 +118,7 @@ def test_api_error_raises(httpx_mock):
             "messages": [{"message_code": "ERR-5106", "message_string": "Invalid"}],
         },
     )
-    client = GmoCoinClient()
+    client = Client()
     with pytest.raises(GmoCoinApiError):
         client.get_status()
 
@@ -131,13 +131,13 @@ def test_http_error_raises(httpx_mock):
         status_code=500,
         json={"status": 5},
     )
-    client = GmoCoinClient()
+    client = Client()
     with pytest.raises(GmoCoinHttpError):
         client.get_status()
 
 
 def test_private_call_requires_keys():
     # Enforces that private endpoints require API credentials.
-    client = GmoCoinClient()
+    client = Client()
     with pytest.raises(ValueError):
         client.get_assets()

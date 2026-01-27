@@ -9,9 +9,9 @@ Quickstart
 
 .. code-block:: python
 
-   from gmocoin_client import GmoCoinClient
+   from gmocoin_client import Client
 
-   client = GmoCoinClient.from_env()
+   client = Client.from_env()
    ticker = client.get_ticker(symbol="BTC_JPY")
    print(ticker.data)
 
