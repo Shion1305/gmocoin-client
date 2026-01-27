@@ -25,4 +25,6 @@ Links
    :maxdepth: 2
    :caption: API Reference:
 
-   api
+   client
+   models
+   errors

@@ -1,0 +1,12 @@
+/* Keep the left navigation tree fully expanded on all pages. */
+.sidebar-tree .toctree-checkbox {
+  display: none;
+}
+
+.sidebar-tree .toctree-checkbox + label {
+  display: none;
+}
+
+.sidebar-tree .toctree-checkbox + label + ul {
+  display: block !important;
+}

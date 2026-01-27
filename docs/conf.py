@@ -27,6 +27,7 @@ autodoc_member_order = "bysource"
 autodoc_typehints = "description"
 napoleon_google_docstring = True
 napoleon_numpy_docstring = False
+toc_object_entries_show_parents = "hide"
 
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
@@ -37,3 +38,5 @@ html_theme_options = {
     "source_branch": "main",
     "source_directory": "docs/",
 }
+html_static_path = ["_static"]
+html_css_files = ["custom.css"]

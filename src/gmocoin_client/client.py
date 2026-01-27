@@ -51,6 +51,10 @@ def _comma_list(values: Iterable[Any] | str | int) -> str:
 
 
 class GmoCoinClient:
+    """GMO Coin REST API client
+
+    GMO Coin の REST API クライアント
+    """
     def __init__(
             self,
             api_key: str | None = None,
@@ -185,14 +189,16 @@ class GmoCoinClient:
         Returns:
             APIResponse containing service status data.
 
-        Example response:
-            {
-              "status": 0,
-              "data": {
-                "status": "OPEN"
-              },
-              "responsetime": "2019-03-19T02:15:06.001Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": {
+                    "status": "OPEN"
+                  },
+                  "responsetime": "2019-03-19T02:15:06.001Z"
+                }
         """
         return self._request("GET", "/v1/status", response_model=APIResponse[ServiceStatusData])
 
@@ -209,23 +215,25 @@ class GmoCoinClient:
         Returns:
             APIResponse containing a list of ticker items.
 
-        Example response:
-            {
-              "status": 0,
-              "data": [
+        Examples:
+            .. code-block:: json
+            
                 {
-                  "ask": "750760",
-                  "bid": "750600",
-                  "high": "762302",
-                  "last": "756662",
-                  "low": "704874",
-                  "symbol": "BTC",
-                  "timestamp": "2018-03-30T12:34:56.789Z",
-                  "volume": "194785.8484"
+                  "status": 0,
+                  "data": [
+                    {
+                      "ask": "750760",
+                      "bid": "750600",
+                      "high": "762302",
+                      "last": "756662",
+                      "low": "704874",
+                      "symbol": "BTC",
+                      "timestamp": "2018-03-30T12:34:56.789Z",
+                      "volume": "194785.8484"
+                    }
+                  ],
+                  "responsetime": "2019-03-19T02:15:06.014Z"
                 }
-              ],
-              "responsetime": "2019-03-19T02:15:06.014Z"
-            }
         """
         params = _prune_params({"symbol": symbol})
         return self._request(
@@ -248,26 +256,28 @@ class GmoCoinClient:
         Returns:
             APIResponse containing order book data.
 
-        Example response:
-            {
-              "status": 0,
-              "data": {
-                "asks": [
-                  {
-                    "price": "455659",
-                    "size": "0.1"
-                  }
-                ],
-                "bids": [
-                  {
-                    "price": "455659",
-                    "size": "0.1"
-                  }
-                ],
-                "symbol": "BTC"
-              },
-              "responsetime": "2019-03-19T02:15:06.026Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": {
+                    "asks": [
+                      {
+                        "price": "455659",
+                        "size": "0.1"
+                      }
+                    ],
+                    "bids": [
+                      {
+                        "price": "455659",
+                        "size": "0.1"
+                      }
+                    ],
+                    "symbol": "BTC"
+                  },
+                  "responsetime": "2019-03-19T02:15:06.026Z"
+                }
         """
         return self._request(
             "GET",
@@ -291,25 +301,27 @@ class GmoCoinClient:
         Returns:
             APIResponse containing trades data.
 
-        Example response:
-            {
-              "status": 0,
-              "data": {
-                "pagination": {
-                  "currentPage": 1,
-                  "count": 30
-                },
-                "list": [
-                  {
-                    "price": "750760",
-                    "side": "BUY",
-                    "size": "0.1",
-                    "timestamp": "2018-03-30T12:34:56.789Z"
-                  }
-                ]
-              },
-              "responsetime": "2019-03-28T09:28:07.980Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": {
+                    "pagination": {
+                      "currentPage": 1,
+                      "count": 30
+                    },
+                    "list": [
+                      {
+                        "price": "750760",
+                        "side": "BUY",
+                        "size": "0.1",
+                        "timestamp": "2018-03-30T12:34:56.789Z"
+                      }
+                    ]
+                  },
+                  "responsetime": "2019-03-28T09:28:07.980Z"
+                }
         """
         params = _prune_params({"symbol": symbol, "page": page, "count": count})
         return self._request(
@@ -334,29 +346,31 @@ class GmoCoinClient:
         Returns:
             APIResponse containing a list of kline items.
 
-        Example response:
-            {
-              "status": 0,
-              "data": [
+        Examples:
+            .. code-block:: json
+            
                 {
-                    "openTime":"1618588800000",
-                    "open":"6418255",
-                    "high":"6518250",
-                    "low":"6318250",
-                    "close":"6418253",
-                    "volume":"0.0001"
-                },
-                {
-                    "openTime":"1618588860000",
-                    "open":"6418251",
-                    "high":"6418252",
-                    "low":"6415250",
-                    "close":"6418245",
-                    "volume":"0.0001"
+                  "status": 0,
+                  "data": [
+                    {
+                        "openTime":"1618588800000",
+                        "open":"6418255",
+                        "high":"6518250",
+                        "low":"6318250",
+                        "close":"6418253",
+                        "volume":"0.0001"
+                    },
+                    {
+                        "openTime":"1618588860000",
+                        "open":"6418251",
+                        "high":"6418252",
+                        "low":"6415250",
+                        "close":"6418245",
+                        "volume":"0.0001"
+                    }
+                  ],
+                  "responsetime": "2019-03-28T09:28:07.980Z"
                 }
-              ],
-              "responsetime": "2019-03-28T09:28:07.980Z"
-            }
         """
         params = {"symbol": symbol, "interval": interval, "date": date}
         return self._request(
@@ -379,31 +393,33 @@ class GmoCoinClient:
         Returns:
             APIResponse containing symbol rules.
 
-        Example response:
-            {
-              "status": 0,
-              "data": [
+        Examples:
+            .. code-block:: json
+            
                 {
-                  "symbol": "BTC",
-                  "minOrderSize": "0.0001",
-                  "maxOrderSize": "5",
-                  "sizeStep": "0.0001",
-                  "tickSize": "1",
-                  "takerFee": "0.0005",
-                  "makerFee": "-0.0001"
-                },
-                {
-                  "symbol": "BTC_JPY",
-                  "minOrderSize": "0.01",
-                  "maxOrderSize": "5",
-                  "sizeStep": "0.01",
-                  "tickSize": "1",
-                  "takerFee": "0",
-                  "makerFee": "0"
+                  "status": 0,
+                  "data": [
+                    {
+                      "symbol": "BTC",
+                      "minOrderSize": "0.0001",
+                      "maxOrderSize": "5",
+                      "sizeStep": "0.0001",
+                      "tickSize": "1",
+                      "takerFee": "0.0005",
+                      "makerFee": "-0.0001"
+                    },
+                    {
+                      "symbol": "BTC_JPY",
+                      "minOrderSize": "0.01",
+                      "maxOrderSize": "5",
+                      "sizeStep": "0.01",
+                      "tickSize": "1",
+                      "takerFee": "0",
+                      "makerFee": "0"
+                    }
+                  ],
+                  "responsetime": "2022-12-15T19:22:23.792Z"
                 }
-              ],
-              "responsetime": "2022-12-15T19:22:23.792Z"
-            }
         """
         return self._request("GET", "/v1/symbols", response_model=APIResponse[list[SymbolRule]])
 
@@ -421,20 +437,22 @@ class GmoCoinClient:
         Returns:
             APIResponse containing margin data.
 
-        Example response:
-            {
-              "status": 0,
-              "data": {
-                "actualProfitLoss": "68286188",
-                "availableAmount": "57262506",
-                "margin": "1021682",
-                "marginCallStatus": "NORMAL",
-                "marginRatio": "6683.6",
-                "profitLoss": "0",
-                "transferableAmount": "57262506"
-              },
-              "responsetime": "2019-03-19T02:15:06.051Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": {
+                    "actualProfitLoss": "68286188",
+                    "availableAmount": "57262506",
+                    "margin": "1021682",
+                    "marginCallStatus": "NORMAL",
+                    "marginRatio": "6683.6",
+                    "profitLoss": "0",
+                    "transferableAmount": "57262506"
+                  },
+                  "responsetime": "2019-03-19T02:15:06.051Z"
+                }
         """
         return self._request(
             "GET",
@@ -456,25 +474,27 @@ class GmoCoinClient:
         Returns:
             APIResponse containing asset balances.
 
-        Example response:
-            {
-              "status": 0,
-              "data": [
+        Examples:
+            .. code-block:: json
+            
                 {
-                  "amount": "993982448",
-                  "available": "993982448",
-                  "conversionRate": "1",
-                  "symbol": "JPY"
-                },
-                {
-                  "amount": "4.0002",
-                  "available": "4.0002",
-                  "conversionRate": "859614",
-                  "symbol": "BTC"
+                  "status": 0,
+                  "data": [
+                    {
+                      "amount": "993982448",
+                      "available": "993982448",
+                      "conversionRate": "1",
+                      "symbol": "JPY"
+                    },
+                    {
+                      "amount": "4.0002",
+                      "available": "4.0002",
+                      "conversionRate": "859614",
+                      "symbol": "BTC"
+                    }
+                  ],
+                  "responsetime": "2019-03-19T02:15:06.055Z"
                 }
-              ],
-              "responsetime": "2019-03-19T02:15:06.055Z"
-            }
         """
         return self._request(
             "GET",
@@ -496,30 +516,32 @@ class GmoCoinClient:
         Returns:
             APIResponse containing trading volume data.
 
-        Example response:
-            {
-              "status": 0,
-              "data": {
-                  "jpyVolume": "9988888",
-                  "tierLevel": 1,
-                  "limit": [
-                     {
-                       "symbol": "BTC/JPY",
-                       "todayLimitOpenSize": "10000",
-                       "takerFee": "0",
-                       "makerFee": "0"
-                     },
-                     {
-                       "symbol": "BTC",
-                       "todayLimitBuySize": "98",
-                       "todayLimitSellSize": "102",
-                       "takerFee": "0.0015",
-                       "makerFee": "-0.0007"
-                     }
-                  ]
-              },
-              "responsetime": "2019-03-19T02:15:06.055Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": {
+                      "jpyVolume": "9988888",
+                      "tierLevel": 1,
+                      "limit": [
+                         {
+                           "symbol": "BTC/JPY",
+                           "todayLimitOpenSize": "10000",
+                           "takerFee": "0",
+                           "makerFee": "0"
+                         },
+                         {
+                           "symbol": "BTC",
+                           "todayLimitBuySize": "98",
+                           "todayLimitSellSize": "102",
+                           "takerFee": "0.0015",
+                           "makerFee": "-0.0007"
+                         }
+                      ]
+                  },
+                  "responsetime": "2019-03-19T02:15:06.055Z"
+                }
         """
         return self._request(
             "GET",
@@ -547,20 +569,22 @@ class GmoCoinClient:
         Returns:
             APIResponse containing fiat deposit history records.
 
-        Example response:
-            {
-              "status": 0,
-              "data": [
+        Examples:
+            .. code-block:: json
+            
                 {
-                  "amount": "50000",
-                  "fee": "0",
-                  "status": "EXECUTED",
-                  "symbol": "JPY",
-                  "timestamp": "2021-01-01T13:47:12.791Z"
+                  "status": 0,
+                  "data": [
+                    {
+                      "amount": "50000",
+                      "fee": "0",
+                      "status": "EXECUTED",
+                      "symbol": "JPY",
+                      "timestamp": "2021-01-01T13:47:12.791Z"
+                    }
+                  ],
+                  "responsetime": "2024-02-28T11:48:57.996Z"
                 }
-              ],
-              "responsetime": "2024-02-28T11:48:57.996Z"
-            }
         """
         params = _prune_params({"fromTimestamp": from_timestamp, "toTimestamp": to_timestamp})
         return self._request(
@@ -590,20 +614,22 @@ class GmoCoinClient:
         Returns:
             APIResponse containing fiat withdrawal history records.
 
-        Example response:
-            {
-              "status": 0,
-              "data": [
+        Examples:
+            .. code-block:: json
+            
                 {
-                  "amount": "50000",
-                  "fee": "0",
-                  "status": "EXECUTED",
-                  "symbol": "JPY",
-                  "timestamp": "2021-01-01T13:47:12.791Z"
+                  "status": 0,
+                  "data": [
+                    {
+                      "amount": "50000",
+                      "fee": "0",
+                      "status": "EXECUTED",
+                      "symbol": "JPY",
+                      "timestamp": "2021-01-01T13:47:12.791Z"
+                    }
+                  ],
+                  "responsetime": "2024-02-28T11:48:57.996Z"
                 }
-              ],
-              "responsetime": "2024-02-28T11:48:57.996Z"
-            }
         """
         params = _prune_params({"fromTimestamp": from_timestamp, "toTimestamp": to_timestamp})
         return self._request(
@@ -635,21 +661,23 @@ class GmoCoinClient:
         Returns:
             APIResponse containing a list of deposit history records.
 
-        Example response:
-            {
-              "status": 0,
-              "data": [
+        Examples:
+            .. code-block:: json
+            
                 {
-                  "address": "xxx",
-                  "amount": "0.9503",
-                  "status": "EXECUTED",
-                  "symbol": "BTC",
-                  "timestamp": "2021-10-05T06:04:46.241Z",
-                  "txHash": "yyy"
+                  "status": 0,
+                  "data": [
+                    {
+                      "address": "xxx",
+                      "amount": "0.9503",
+                      "status": "EXECUTED",
+                      "symbol": "BTC",
+                      "timestamp": "2021-10-05T06:04:46.241Z",
+                      "txHash": "yyy"
+                    }
+                  ],
+                  "responsetime": "2024-02-28T12:20:07.103Z"
                 }
-              ],
-              "responsetime": "2024-02-28T12:20:07.103Z"
-            }
         """
         params = _prune_params(
             {"symbol": symbol, "fromTimestamp": from_timestamp, "toTimestamp": to_timestamp},
@@ -683,21 +711,23 @@ class GmoCoinClient:
         Returns:
             APIResponse containing withdrawal history records.
 
-        Example response:
-            {
-              "status": 0,
-              "data": [
+        Examples:
+            .. code-block:: json
+            
                 {
-                  "address": "xxx",
-                  "amount": "0.9503",
-                  "status": "EXECUTED",
-                  "symbol": "BTC",
-                  "timestamp": "2021-10-05T06:04:46.241Z",
-                  "txHash": "yyy"
+                  "status": 0,
+                  "data": [
+                    {
+                      "address": "xxx",
+                      "amount": "0.9503",
+                      "status": "EXECUTED",
+                      "symbol": "BTC",
+                      "timestamp": "2021-10-05T06:04:46.241Z",
+                      "txHash": "yyy"
+                    }
+                  ],
+                  "responsetime": "2024-02-28T12:20:07.103Z"
                 }
-              ],
-              "responsetime": "2024-02-28T12:20:07.103Z"
-            }
         """
         params = _prune_params(
             {"symbol": symbol, "fromTimestamp": from_timestamp, "toTimestamp": to_timestamp},
@@ -724,48 +754,50 @@ class GmoCoinClient:
         Returns:
             APIResponse containing order list data.
 
-        Example response:
-            {
-              "status": 0,
-              "data": {
-                "list": [
-                  {
-                    "orderId": 223456789,
-                    "rootOrderId": 223456789,
-                    "symbol": "BTC_JPY",
-                    "side": "BUY",
-                    "orderType": "NORMAL",
-                    "executionType": "LIMIT",
-                    "settleType": "OPEN",
-                    "size": "0.02",
-                    "executedSize": "0.02",
-                    "price": "1430001",
-                    "losscutPrice": "0",
-                    "status": "EXECUTED",
-                    "timeInForce": "FAS",
-                    "timestamp": "2020-10-14T20:18:59.343Z"
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": {
+                    "list": [
+                      {
+                        "orderId": 223456789,
+                        "rootOrderId": 223456789,
+                        "symbol": "BTC_JPY",
+                        "side": "BUY",
+                        "orderType": "NORMAL",
+                        "executionType": "LIMIT",
+                        "settleType": "OPEN",
+                        "size": "0.02",
+                        "executedSize": "0.02",
+                        "price": "1430001",
+                        "losscutPrice": "0",
+                        "status": "EXECUTED",
+                        "timeInForce": "FAS",
+                        "timestamp": "2020-10-14T20:18:59.343Z"
+                      },
+                      {
+                        "rootOrderId": 123456789,
+                        "orderId": 123456789,
+                        "symbol": "BTC",
+                        "side": "BUY",
+                        "orderType": "NORMAL",
+                        "executionType": "LIMIT",
+                        "settleType": "OPEN",
+                        "size": "1",
+                        "executedSize": "0",
+                        "price": "900000",
+                        "losscutPrice": "0",
+                        "status": "CANCELED",
+                        "cancelType": "USER",
+                        "timeInForce": "FAS",
+                        "timestamp": "2019-03-19T02:15:06.059Z"
+                      }
+                    ]
                   },
-                  {
-                    "rootOrderId": 123456789,
-                    "orderId": 123456789,
-                    "symbol": "BTC",
-                    "side": "BUY",
-                    "orderType": "NORMAL",
-                    "executionType": "LIMIT",
-                    "settleType": "OPEN",
-                    "size": "1",
-                    "executedSize": "0",
-                    "price": "900000",
-                    "losscutPrice": "0",
-                    "status": "CANCELED",
-                    "cancelType": "USER",
-                    "timeInForce": "FAS",
-                    "timestamp": "2019-03-19T02:15:06.059Z"
-                  }
-                ]
-              },
-              "responsetime": "2019-03-19T02:15:06.059Z"
-            }
+                  "responsetime": "2019-03-19T02:15:06.059Z"
+                }
         """
         params = {"orderId": _comma_list(order_ids)}
         return self._request(
@@ -797,35 +829,37 @@ class GmoCoinClient:
         Returns:
             APIResponse containing active orders data.
 
-        Example response:
-            {
-              "status": 0,
-              "data": {
-                "pagination": {
-                  "currentPage": 1,
-                  "count": 30
-                },
-                "list": [
-                  {
-                    "rootOrderId": 123456789,
-                    "orderId": 123456789,
-                    "symbol": "BTC",
-                    "side": "BUY",
-                    "orderType": "NORMAL",
-                    "executionType": "LIMIT",
-                    "settleType": "OPEN",
-                    "size": "1",
-                    "executedSize": "0",
-                    "price": "840000",
-                    "losscutPrice": "0",
-                    "status": "ORDERED",
-                    "timeInForce": "FAS",
-                    "timestamp": "2019-03-19T01:07:24.217Z"
-                  }
-                ]
-              },
-              "responsetime": "2019-03-19T01:07:24.217Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": {
+                    "pagination": {
+                      "currentPage": 1,
+                      "count": 30
+                    },
+                    "list": [
+                      {
+                        "rootOrderId": 123456789,
+                        "orderId": 123456789,
+                        "symbol": "BTC",
+                        "side": "BUY",
+                        "orderType": "NORMAL",
+                        "executionType": "LIMIT",
+                        "settleType": "OPEN",
+                        "size": "1",
+                        "executedSize": "0",
+                        "price": "840000",
+                        "losscutPrice": "0",
+                        "status": "ORDERED",
+                        "timeInForce": "FAS",
+                        "timestamp": "2019-03-19T01:07:24.217Z"
+                      }
+                    ]
+                  },
+                  "responsetime": "2019-03-19T01:07:24.217Z"
+                }
         """
         params = _prune_params({"symbol": symbol, "page": page, "count": count})
         return self._request(
@@ -855,41 +889,43 @@ class GmoCoinClient:
         Returns:
             APIResponse containing executions data.
 
-        Example response:
-            {
-              "status": 0,
-              "data": {
-                "list": [
-                  {
-                    "executionId": 92123912,
-                    "orderId": 223456789,
-                    "positionId": 1234567,
-                    "symbol": "BTC_JPY",
-                    "side": "BUY",
-                    "settleType": "OPEN",
-                    "size": "0.02",
-                    "price": "1900000",
-                    "lossGain": "0",
-                    "fee": "223",
-                    "timestamp": "2020-11-24T21:27:04.764Z"
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": {
+                    "list": [
+                      {
+                        "executionId": 92123912,
+                        "orderId": 223456789,
+                        "positionId": 1234567,
+                        "symbol": "BTC_JPY",
+                        "side": "BUY",
+                        "settleType": "OPEN",
+                        "size": "0.02",
+                        "price": "1900000",
+                        "lossGain": "0",
+                        "fee": "223",
+                        "timestamp": "2020-11-24T21:27:04.764Z"
+                      },
+                      {
+                        "executionId": 72123911,
+                        "orderId": 123456789,
+                        "positionId": 1234567,
+                        "symbol": "BTC",
+                        "side": "BUY",
+                        "settleType": "OPEN",
+                        "size": "0.7361",
+                        "price": "877404",
+                        "lossGain": "0",
+                        "fee": "323",
+                        "timestamp": "2019-03-19T02:15:06.081Z"
+                      }
+                    ]
                   },
-                  {
-                    "executionId": 72123911,
-                    "orderId": 123456789,
-                    "positionId": 1234567,
-                    "symbol": "BTC",
-                    "side": "BUY",
-                    "settleType": "OPEN",
-                    "size": "0.7361",
-                    "price": "877404",
-                    "lossGain": "0",
-                    "fee": "323",
-                    "timestamp": "2019-03-19T02:15:06.081Z"
-                  }
-                ]
-              },
-              "responsetime": "2019-03-19T02:15:06.081Z"
-            }
+                  "responsetime": "2019-03-19T02:15:06.081Z"
+                }
         """
         if order_id is None and execution_id is None:
             raise ValueError("order_id or execution_id is required")
@@ -928,32 +964,34 @@ class GmoCoinClient:
         Returns:
             APIResponse containing latest executions data.
 
-        Example response:
-            {
-              "status": 0,
-              "data": {
-                "pagination": {
-                  "currentPage": 1,
-                  "count": 30
-                },
-                "list": [
-                  {
-                    "executionId": 72123911,
-                    "orderId": 123456789,
-                    "positionId": 1234567,
-                    "symbol": "BTC",
-                    "side": "BUY",
-                    "settleType": "OPEN",
-                    "size": "0.7361",
-                    "price": "877404",
-                    "lossGain": "0",
-                    "fee": "323",
-                    "timestamp": "2019-03-19T02:15:06.086Z"
-                  }
-                ]
-              },
-              "responsetime": "2019-03-19T02:15:06.086Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": {
+                    "pagination": {
+                      "currentPage": 1,
+                      "count": 30
+                    },
+                    "list": [
+                      {
+                        "executionId": 72123911,
+                        "orderId": 123456789,
+                        "positionId": 1234567,
+                        "symbol": "BTC",
+                        "side": "BUY",
+                        "settleType": "OPEN",
+                        "size": "0.7361",
+                        "price": "877404",
+                        "lossGain": "0",
+                        "fee": "323",
+                        "timestamp": "2019-03-19T02:15:06.086Z"
+                      }
+                    ]
+                  },
+                  "responsetime": "2019-03-19T02:15:06.086Z"
+                }
         """
         params = _prune_params({"symbol": symbol, "page": page, "count": count})
         return self._request(
@@ -995,12 +1033,14 @@ class GmoCoinClient:
         Returns:
             APIResponse with the new order ID.
 
-        Example response:
-            {
-              "status": 0,
-              "data": "637000",
-              "responsetime": "2019-03-19T02:15:06.108Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": "637000",
+                  "responsetime": "2019-03-19T02:15:06.108Z"
+                }
         """
         body = _prune_params(
             {
@@ -1037,11 +1077,13 @@ class GmoCoinClient:
         Returns:
             APIResponse containing the status of the change request.
 
-        Example response:
-            {
-              "status": 0,
-              "responsetime": "2019-03-19T01:07:24.557Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "responsetime": "2019-03-19T01:07:24.557Z"
+                }
         """
         body = _prune_params({"orderId": order_id, "price": price, "losscutPrice": losscut_price})
         return self._request("POST", "/v1/changeOrder", private=True, json_body=body)
@@ -1059,11 +1101,13 @@ class GmoCoinClient:
         Returns:
             APIResponse containing the status of the cancel request.
 
-        Example response:
-            {
-              "status": 0,
-              "responsetime": "2019-03-19T01:07:24.557Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "responsetime": "2019-03-19T01:07:24.557Z"
+                }
         """
         return self._request("POST", "/v1/cancelOrder", private=True, json_body={"orderId": order_id})
 
@@ -1080,26 +1124,28 @@ class GmoCoinClient:
         Returns:
             APIResponse containing success and failure results.
 
-        Example response:
-            {
-              "status": 0,
-              "data": {
-                  "failed": [
-                    {
-                      "message_code": "ERR-5122",
-                      "message_string": "The request is invalid due to the status of the specified order.",
-                      "orderId": 1
-                    },
-                    {
-                      "message_code": "ERR-5122",
-                      "message_string": "The request is invalid due to the status of the specified order.",
-                      "orderId": 2
-                    }
-                  ],
-                  "success": [3,4]
-              },
-              "responsetime": "2019-03-19T01:07:24.557Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": {
+                      "failed": [
+                        {
+                          "message_code": "ERR-5122",
+                          "message_string": "The request is invalid due to the status of the specified order.",
+                          "orderId": 1
+                        },
+                        {
+                          "message_code": "ERR-5122",
+                          "message_string": "The request is invalid due to the status of the specified order.",
+                          "orderId": 2
+                        }
+                      ],
+                      "success": [3,4]
+                  },
+                  "responsetime": "2019-03-19T01:07:24.557Z"
+                }
         """
         return self._request("POST", "/v1/cancelOrders", private=True, json_body={"orderIds": list(order_ids)})
 
@@ -1126,12 +1172,14 @@ class GmoCoinClient:
         Returns:
             APIResponse containing canceled order IDs.
 
-        Example response:
-            {
-              "status": 0,
-              "data": [637000,637002],
-              "responsetime": "2019-03-19T01:07:24.557Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": [637000,637002],
+                  "responsetime": "2019-03-19T01:07:24.557Z"
+                }
         """
         body = _prune_params(
             {
@@ -1165,31 +1213,33 @@ class GmoCoinClient:
         Returns:
             APIResponse containing open positions data.
 
-        Example response:
-            {
-              "status": 0,
-              "data": {
-                "pagination": {
-                  "currentPage": 1,
-                  "count": 30
-                },
-                "list": [
-                  {
-                    "positionId": 1234567,
-                    "symbol": "BTC_JPY",
-                    "side": "BUY",
-                    "size": "0.22",
-                    "orderdSize": "0",
-                    "price": "876045",
-                    "lossGain": "14",
-                    "leverage": "4",
-                    "losscutPrice": "766540",
-                    "timestamp": "2019-03-19T02:15:06.094Z"
-                  }
-                ]
-              },
-              "responsetime": "2019-03-19T02:15:06.095Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": {
+                    "pagination": {
+                      "currentPage": 1,
+                      "count": 30
+                    },
+                    "list": [
+                      {
+                        "positionId": 1234567,
+                        "symbol": "BTC_JPY",
+                        "side": "BUY",
+                        "size": "0.22",
+                        "orderdSize": "0",
+                        "price": "876045",
+                        "lossGain": "14",
+                        "leverage": "4",
+                        "losscutPrice": "766540",
+                        "timestamp": "2019-03-19T02:15:06.094Z"
+                      }
+                    ]
+                  },
+                  "responsetime": "2019-03-19T02:15:06.095Z"
+                }
         """
         params = _prune_params({"symbol": symbol, "page": page, "count": count})
         return self._request(
@@ -1213,23 +1263,25 @@ class GmoCoinClient:
         Returns:
             APIResponse containing position summary data.
 
-        Example response:
-            {
-              "status": 0,
-              "data": {
-                "list": [
-                  {
-                    "averagePositionRate": "715656",
-                    "positionLossGain": "250675",
-                    "side": "BUY",
-                    "sumOrderQuantity": "2",
-                    "sumPositionQuantity": "11.6999",
-                    "symbol": "BTC_JPY"
-                  }
-                ]
-              },
-              "responsetime": "2019-03-19T02:15:06.102Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": {
+                    "list": [
+                      {
+                        "averagePositionRate": "715656",
+                        "positionLossGain": "250675",
+                        "side": "BUY",
+                        "sumOrderQuantity": "2",
+                        "sumPositionQuantity": "11.6999",
+                        "symbol": "BTC_JPY"
+                      }
+                    ]
+                  },
+                  "responsetime": "2019-03-19T02:15:06.102Z"
+                }
         """
         params = _prune_params({"symbol": symbol})
         return self._request(
@@ -1254,16 +1306,18 @@ class GmoCoinClient:
         Returns:
             APIResponse containing transferred amount.
 
-        Example response:
-            {
-              "status": 0,
-              "data": [
+        Examples:
+            .. code-block:: json
+            
                 {
-                  "transferredAmount": "100000"
+                  "status": 0,
+                  "data": [
+                    {
+                      "transferredAmount": "100000"
+                    }
+                  ],
+                  "responsetime": "2019-03-19T02:15:06.055Z"
                 }
-              ],
-              "responsetime": "2019-03-19T02:15:06.055Z"
-            }
         """
         body = {"amount": amount, "transferType": transfer_type}
         return self._request("POST", "/v1/account/transfer", private=True, json_body=body)
@@ -1297,12 +1351,14 @@ class GmoCoinClient:
         Returns:
             APIResponse with the new closing order ID.
 
-        Example response:
-            {
-              "status": 0,
-              "data": "637000",
-              "responsetime": "2019-03-19T01:07:24.557Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": "637000",
+                  "responsetime": "2019-03-19T01:07:24.557Z"
+                }
         """
         body = _prune_params(
             {
@@ -1344,12 +1400,14 @@ class GmoCoinClient:
         Returns:
             APIResponse with the new closing bulk order ID.
 
-        Example response:
-            {
-              "status": 0,
-              "data": "637000",
-              "responsetime": "2019-03-19T01:07:24.557Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": "637000",
+                  "responsetime": "2019-03-19T01:07:24.557Z"
+                }
         """
         body = _prune_params(
             {
@@ -1377,11 +1435,13 @@ class GmoCoinClient:
         Returns:
             APIResponse containing status of the update.
 
-        Example response:
-            {
-              "status": 0,
-              "responsetime": "2019-03-19T01:07:24.557Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "responsetime": "2019-03-19T01:07:24.557Z"
+                }
         """
         body = {"positionId": position_id, "losscutPrice": losscut_price}
         return self._request("POST", "/v1/changeLosscutPrice", private=True, json_body=body)
@@ -1400,12 +1460,14 @@ class GmoCoinClient:
         Returns:
             APIResponse containing the access token.
 
-        Example response:
-            {
-              "status": 0,
-              "data": "xxxxxxxxxxxxxxxxxxxx",
-              "responsetime": "2019-03-19T02:15:06.102Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "data": "xxxxxxxxxxxxxxxxxxxx",
+                  "responsetime": "2019-03-19T02:15:06.102Z"
+                }
         """
         return self._request("POST", "/v1/ws-auth", private=True, json_body={})
 
@@ -1422,11 +1484,13 @@ class GmoCoinClient:
         Returns:
             APIResponse containing status of the update.
 
-        Example response:
-            {
-              "status": 0,
-              "responsetime": "2019-03-19T02:15:06.102Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "responsetime": "2019-03-19T02:15:06.102Z"
+                }
         """
         return self._request(
             "PUT",
@@ -1449,11 +1513,13 @@ class GmoCoinClient:
         Returns:
             APIResponse containing status of the deletion.
 
-        Example response:
-            {
-              "status": 0,
-              "responsetime": "2019-03-19T02:15:06.102Z"
-            }
+        Examples:
+            .. code-block:: json
+            
+                {
+                  "status": 0,
+                  "responsetime": "2019-03-19T02:15:06.102Z"
+                }
         """
         return self._request(
             "DELETE",
