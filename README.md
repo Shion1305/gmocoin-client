@@ -11,9 +11,9 @@ Set `GMO_API_KEY` and `GMO_SECRET_KEY` in your environment for private API calls
 ### Public endpoints
 
 ```python
-from gmocoin_client import GmoCoinClient
+from gmocoin_client import Client
 
-client = GmoCoinClient()
+client = Client()
 
 status = client.get_status()
 ticker = client.get_ticker("BTC")
@@ -23,9 +23,9 @@ orderbooks = client.get_orderbooks("BTC")
 ### Private endpoints (with env vars)
 
 ```python
-from gmocoin_client import GmoCoinClient
+from gmocoin_client import Client
 
-with GmoCoinClient.from_env() as client:
+with Client.from_env() as client:
     assets = client.get_assets()
     margin = client.get_margin()
 ```
@@ -33,9 +33,9 @@ with GmoCoinClient.from_env() as client:
 ### Place an order
 
 ```python
-from gmocoin_client import GmoCoinClient
+from gmocoin_client import Client
 
-with GmoCoinClient.from_env() as client:
+with Client.from_env() as client:
     order = client.create_order(
         symbol="BTC_JPY",
         side="BUY",
@@ -49,18 +49,18 @@ with GmoCoinClient.from_env() as client:
 ### WebSocket access token
 
 ```python
-from gmocoin_client import GmoCoinClient
+from gmocoin_client import Client
 
-with GmoCoinClient.from_env() as client:
+with Client.from_env() as client:
     token = client.ws_auth_create()
 ```
 
 ### Error handling
 
 ```python
-from gmocoin_client import GmoCoinApiError, GmoCoinClient, GmoCoinHttpError
+from gmocoin_client import GmoCoinApiError, Client, GmoCoinHttpError
 
-client = GmoCoinClient()
+client = Client()
 
 try:
     client.get_ticker("BTC")
