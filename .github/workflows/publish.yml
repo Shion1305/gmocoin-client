@@ -39,11 +39,11 @@ jobs:
               raise SystemExit("version field not found in pyproject.toml")
           current = match.group(1)
           if current == version:
-              print(f\"Package version already set to {version}\")
+              print(f"Package version already set to {version}")
           else:
               updated = re.sub(pattern, f'version = \"{version}\"', text, count=1)
               path.write_text(updated)
-              print(f\"Set package version to {version}\")
+              print(f"Set package version to {version}")
           PY
 
       - name: Build package
