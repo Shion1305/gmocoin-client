@@ -50,7 +50,7 @@ def _comma_list(values: Iterable[Any] | str | int) -> str:
     return ",".join(str(value) for value in values)
 
 
-class GmoCoinClient:
+class Client:
     """GMO Coin REST API client
 
     GMO Coin の REST API クライアント
@@ -73,7 +73,7 @@ class GmoCoinClient:
         self.raise_on_error = raise_on_error
         self._client = client or httpx.Client(timeout=timeout)
 
-    def __enter__(self) -> "GmoCoinClient":
+    def __enter__(self) -> "Client":
         return self
 
     def __exit__(self, exc_type, exc, tb) -> None:
@@ -86,7 +86,7 @@ class GmoCoinClient:
             api_key_env: str = "GMO_API_KEY",
             api_secret_env: str = "GMO_SECRET_KEY",
             **kwargs: Any,
-    ) -> "GmoCoinClient":
+    ) -> "Client":
         return cls(
             api_key=os.getenv(api_key_env),
             api_secret=os.getenv(api_secret_env),

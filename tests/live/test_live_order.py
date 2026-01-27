@@ -5,7 +5,7 @@ from decimal import Decimal
 import pytest
 from pydantic import BaseModel
 
-from gmocoin_client import GmoCoinClient
+from gmocoin_client import Client
 from tests.live._helpers import require_live_env
 
 pytestmark = pytest.mark.live
@@ -16,7 +16,7 @@ def _require_price_if_needed(label: str, execution_type: str, price: str | None)
         pytest.skip(f"{label} requires a price when executionType is {execution_type}.")
 
 
-def _get_executed_size(client: GmoCoinClient, order_id: int, timeout: float, interval: float) -> Decimal:
+def _get_executed_size(client: Client, order_id: int, timeout: float, interval: float) -> Decimal:
     deadline = time.monotonic() + timeout
     total = Decimal("0")
 
@@ -77,7 +77,7 @@ def test_spot_buy_then_sell():
     wait_timeout = float(os.getenv("GMO_LIVE_WAIT_TIMEOUT", "10"))
     wait_interval = float(os.getenv("GMO_LIVE_WAIT_INTERVAL", "1"))
 
-    with GmoCoinClient.from_env() as client:
+    with Client.from_env() as client:
         buy_response = client.create_order(
             symbol=symbol,
             side="BUY",
