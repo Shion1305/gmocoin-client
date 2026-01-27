@@ -21,6 +21,25 @@ jobs:
         with:
           python-version: "3.13"
 
+      - name: Set version from tag
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          tag = os.environ["GITHUB_REF_NAME"]
+          version = tag.lstrip("v")
+          path = Path("pyproject.toml")
+          text = path.read_text()
+          updated = re.sub(r'(?m)^version\\s*=\\s*\"[^\"]+\"', f'version = \"{version}\"', text, count=1)
+          if text == updated:
+              raise SystemExit("version field not found in pyproject.toml")
+          path.write_text(updated)
+          print(f"Set package version to {version}")
+          PY
+
       - name: Build package
         run: |
           python -m pip install --upgrade pip build
