@@ -9,6 +9,12 @@ dependencies = [
     "pydantic>=2.12.2",
 ]
 
+[project.optional-dependencies]
+docs = [
+    "furo>=2024.8.6",
+    "sphinx>=7.4",
+]
+
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
@@ -27,6 +33,6 @@ dev = [
     "ruff>=0.14.0",
 ]
 docs = [
-    "mkdocs-material>=9.6.21",
-    "mkdocstrings[python]>=0.30.1",
+    "furo>=2024.8.6",
+    "sphinx>=7.4",
 ]
