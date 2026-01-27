@@ -33,7 +33,7 @@ jobs:
           version = tag.lstrip("v")
           path = Path("pyproject.toml")
           text = path.read_text()
-          pattern = r'(?m)^version\\s*=\\s*[\"\\\']([^\"\\\']+)[\"\\\']'
+          pattern = r'(?m)^version\s*=\s*["\']([^"\']+)["\']'
           match = re.search(pattern, text)
           if not match:
               raise SystemExit("version field not found in pyproject.toml")
